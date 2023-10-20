@@ -3,19 +3,18 @@ package com.example.recyclerviewsingleselection;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.recyclerviewsingleselection.databinding.RvItemBinding;
 
 import java.util.List;
 
 public class SingleSelectionAdapter extends RecyclerView.Adapter<SingleSelectionAdapter.SingleSelectionViewHolder> {
 
     private List<Contact> contactList;
-    private int selectedPositon = -1;
+    private int selectedPosition = -1;
 
     public SingleSelectionAdapter(List<Contact> contactList) {
         this.contactList = contactList;
@@ -24,8 +23,8 @@ public class SingleSelectionAdapter extends RecyclerView.Adapter<SingleSelection
     @NonNull
     @Override
     public SingleSelectionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        var view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_item, parent, false);
-        return new SingleSelectionViewHolder(view);
+        var binding = RvItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new SingleSelectionViewHolder(binding);
     }
 
     @Override
@@ -40,42 +39,35 @@ public class SingleSelectionAdapter extends RecyclerView.Adapter<SingleSelection
     }
 
     public class SingleSelectionViewHolder extends RecyclerView.ViewHolder {
+        RvItemBinding binding;
 
-        ConstraintLayout container;
-        ImageView checkedIcon;
-        TextView name;
-        TextView number;
+        public SingleSelectionViewHolder(RvItemBinding binding) {
+            super(binding.getRoot());
 
-        public SingleSelectionViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            container = itemView.findViewById(R.id.constraint_layout_container);
-            checkedIcon = itemView.findViewById(R.id.image_view_icon_check);
-            name = itemView.findViewById(R.id.text_view_name);
-            number = itemView.findViewById(R.id.text_view_number);
+            this.binding = binding;
         }
 
         public void bind(Contact contact) {
             var adapterPosition = getAdapterPosition();
 
-            if (selectedPositon == -1 || adapterPosition != selectedPositon) {
-                checkedIcon.setVisibility(View.GONE);
+            if (selectedPosition == -1 || adapterPosition != selectedPosition) {
+                binding.imageViewIconCheck.setVisibility(View.GONE);
             } else {
-                checkedIcon.setVisibility(View.VISIBLE);
+                binding.imageViewIconCheck.setVisibility(View.VISIBLE);
             }
 
-            name.setText(contact.name);
-            number.setText(contact.number);
+            binding.textViewName.setText(contact.name);
+            binding.textViewNumber.setText(contact.number);
 
-            container.setOnClickListener(view -> {
-                checkedIcon.setVisibility(View.VISIBLE);
+            binding.constraintLayoutContainer.setOnClickListener(view -> {
+                binding.imageViewIconCheck.setVisibility(View.VISIBLE);
 
                 var adapterPositionOnClick = getAdapterPosition();
-                if (selectedPositon != adapterPositionOnClick) {
-                    if (selectedPositon != -1) {
-                        notifyItemChanged(selectedPositon);
+                if (selectedPosition != adapterPositionOnClick) {
+                    if (selectedPosition != -1) {
+                        notifyItemChanged(selectedPosition);
                     }
-                    selectedPositon = adapterPositionOnClick;
+                    selectedPosition = adapterPositionOnClick;
                 }
             });
 
@@ -83,8 +75,8 @@ public class SingleSelectionAdapter extends RecyclerView.Adapter<SingleSelection
     }
 
     public Contact getSelection() {
-        if (selectedPositon != -1) {
-            return contactList.get(selectedPositon);
+        if (selectedPosition != -1) {
+            return contactList.get(selectedPosition);
         }
         return null;
     }
