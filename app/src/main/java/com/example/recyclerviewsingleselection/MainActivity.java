@@ -32,7 +32,17 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this));
 
         binding.buttonShowSelected.setOnClickListener(v -> {
-            Toast.makeText(getBaseContext(), "selected: ", Toast.LENGTH_SHORT).show();
+            Contact selectedContact = adapter.getSelection();
+            StringBuffer msg = new StringBuffer();
+            msg.append("selected: ");
+            if (selectedContact != null) {
+                msg.append(selectedContact.name);
+                msg.append(" ");
+                msg.append(selectedContact.number);
+            } else {
+                msg.append("null");
+            }
+            Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
         });
     }
 
